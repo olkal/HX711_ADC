@@ -2,7 +2,7 @@
 // HX711_ADC.h
 // Arduino master library for HX711 24-Bit Analog-to-Digital Converter for Weigh Scales
 // Olav Kallhovd sept2017
-// Tested with      : 2x HX711 asian module on channel A and 2x YZC-133 3kg load cell
+// Tested with      : HX711 asian module on channel A and YZC-133 3kg load cell
 // Tested with MCU  : Arduino Nano
 //-------------------------------------------------------------------------------------
 // This is an example scetch on how to use the library.
