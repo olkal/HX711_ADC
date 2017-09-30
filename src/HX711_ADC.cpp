@@ -23,7 +23,7 @@ void HX711_ADC::setGain(uint8_t gain)  //value should be 32, 64 or 128*
 	else GAIN = 1; //128, channel A
 }
 
-/*  start(t): will do conversions continously for 't' milliseconds. 
+/*  start(t): will do conversions continuously for 't' milliseconds. 
 *   Running this for 1-5s before tare() seems to improve the tare accuracy */
 void HX711_ADC::start(unsigned int t)
 {
@@ -83,6 +83,11 @@ int HX711_ADC::tareF() // zero the scale, call repetably, returns 1 when finnish
 void HX711_ADC::setCalFactor(float cal) //raw data is divided by this value to convert to readable data
 {
 	calFactor = cal;
+}
+
+float HX711_ADC::getCalFactor() //raw data is divided by this value to convert to readable data
+{
+	return calFactor;
 }
 
 float HX711_ADC::getData() // return fresh data from the moving average data set

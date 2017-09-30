@@ -5,7 +5,7 @@
 // Tested with      : HX711 asian module on channel A and YZC-133 3kg load cell
 // Tested with MCU  : Arduino Nano
 //-------------------------------------------------------------------------------------
-// This is an example scetch on how to use the library.
+// This is an example sketch on how to use the library.
 // Settling time and data filtering can be adjusted in the HX711_ADC.h file
 
 #include <HX711_ADC.h>
@@ -16,8 +16,8 @@ HX711_ADC LdCell(A0, A1, 128);
 void setup() {
   Serial.begin(9600);
   long t = millis();
-  long stabilizingtime = 4000; // tare preciscion can be improved by adding a few seconds of stabilizing time 
-  LdCell.start(stabilizingtime);
+  long stabilisingtime = 4000; // tare precision can be improved by adding a few seconds of stabilising time 
+  LdCell.start(stabilisingtime);
   LdCell.setCalFactor(696.0); // user set calibration factor (float)
   Serial.print("Startup + tare time:");
   Serial.println(millis() - t);

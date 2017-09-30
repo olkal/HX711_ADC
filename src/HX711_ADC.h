@@ -14,8 +14,7 @@
 #define SAMPLES 			16								// no of samples in moving average data set, value must be 4, 8, 16, 32 or 64
 #define IGN_HIGH_SAMPLE 	1 								// adds one sample to the set and ignore peak high sample, value must be 0 or 1
 #define IGN_LOW_SAMPLE 		1 								// adds one sample to the set and ignore peak low sample, value must be 0 or 1
-#define TARE_X2 			1 								// if true, tare is performed twice and value is based on average of the 2 sets
-#define TARE_SAMPLES 		8 								// no of sample readings in tare function, value should be => SAMPLES
+
 #define DATA_SET 			SAMPLES + IGN_HIGH_SAMPLE + IGN_HIGH_SAMPLE // total samples in memory
 
 #if (SAMPLES  != 4) & (SAMPLES  != 8) & (SAMPLES  != 16) & (SAMPLES  != 32) & (SAMPLES  != 64) & (SAMPLES  != 128)
@@ -46,6 +45,7 @@ class HX711_ADC
 		int tareF(); // zero the scale one conversion at a time
 		int startMulti(unsigned int t);
 		void setCalFactor(float cal); //raw data is divided by this value to convert to readable data
+		float getCalFactor(); // returns the current clibration factor
 		float getData(); // returns data from the moving average data set 
 		float getSingleConversion(); //for testing
 		void powerDown(); 
