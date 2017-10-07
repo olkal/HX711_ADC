@@ -9,11 +9,11 @@
 #include <Arduino.h>
 #include <HX711_ADC.h>
 
-HX711_ADC::HX711_ADC(uint8_t dout, uint8_t sck, uint8_t gain) //constructor
-{ 
+
+HX711_ADC::HX711_ADC(uint8_t dout, uint8_t sck) //constructor
+{ 	
 	doutPin = dout;
 	sckPin = sck;
-	setGain(gain);
 } 
 
 void HX711_ADC::setGain(uint8_t gain)  //value should be 32, 64 or 128*
@@ -23,61 +23,82 @@ void HX711_ADC::setGain(uint8_t gain)  //value should be 32, 64 or 128*
 	else GAIN = 1; //128, channel A
 }
 
-/*  start(t): will do conversions continuously for 't' milliseconds. 
-*   Running this for 1-5s before tare() seems to improve the tare accuracy */
-void HX711_ADC::start(unsigned int t)
+void HX711_ADC::begin()
 {
 	pinMode(sckPin, OUTPUT);
 	pinMode(doutPin, INPUT);
-	if(t < 400) t = 400; //min time for HX711 to be stable
+	setGain(128);
+	powerUp();
+}
+
+
+void HX711_ADC::begin(uint8_t gain)
+{
+	pinMode(sckPin, OUTPUT);
+	pinMode(doutPin, INPUT);
+	setGain(gain);
+	powerUp();
+}
+
+/*  start(t): will do conversions continuously for 't' +400 milliseconds (400ms is min. settling time at 10SPS). 
+*   Running this for 1-5s before tare() seems to improve the tare accuracy */
+void HX711_ADC::start(unsigned int t)
+{
+	t += 400;
 	while(millis() < t) {
 		getData();
 	}
 	tare();
+	tareStatus = 0;
 }	
 
-int HX711_ADC::startMulti(unsigned int t)
+int HX711_ADC::startMultiple(unsigned int t)
 {
-	pinMode(sckPin, OUTPUT);
-	pinMode(doutPin, INPUT);
-	if(t < 400) t = 400; //min time for HX711 to be stable
-	if(isFirst) {
-		timeStamp = millis();
-		isFirst = 0;
-	}	
-	if(millis() < timeStamp + t) {
-		getData();
-		return 0;
+	if(startStatus == 0) {
+		if(isFirst) {
+			t += 400; //min time for HX711 to be stable
+			timeStamp = millis();
+			isFirst = 0;
+		}	
+		if(millis() < timeStamp + t) {
+			//update(); //do conversions during stabi time
+			update();
+			return 0;
+		}
+		else { //do tare after stabi time
+			doTare = 1;
+			update();
+			if(convRslt == 2) {	
+				doTare = 0;
+				convRslt = 0;
+				startStatus = 1;
+			}
+		}
 	}
-	else {
-		return tareF();
-	}
+	return startStatus;
 }
 
 void HX711_ADC::tare() 
 {
 	uint8_t rdy = 0;
-	while(!rdy) {
-		rdy = tareF();
+	doTare = 1;
+	tareTimes = 0;
+	while(rdy != 2) {
+		rdy = update();
 	}
 }
 
-int HX711_ADC::tareF() // zero the scale, call repetably, returns 1 when finnished
+bool HX711_ADC::getTareStatus() 
 {
-	uint8_t times = 0;
-	if (tareTimes < DATA_SET) {
-		uint8_t dout = digitalRead(doutPin); //check if conversion is ready
-		if (!dout) {
-			conversion24bit();
-			tareTimes++;
-		}
-		return 0;
-	}
-	else {
-		long i = smoothedData();
-		tareOffset = i >> divBit;
-		return 1;
-	}
+	bool t = tareStatus;
+	tareStatus = 0;
+	return t;
+}
+
+void HX711_ADC::tareNoDelay() 
+{
+	doTare = 1;
+	tareTimes = 0;
 }
 
 void HX711_ADC::setCalFactor(float cal) //raw data is divided by this value to convert to readable data
@@ -90,16 +111,29 @@ float HX711_ADC::getCalFactor() //raw data is divided by this value to convert t
 	return calFactor;
 }
 
+//call update() in loop
+//if conversion is ready; read out 24 bit data and add to data set, returns 1
+//if tare operation is complete, returns 2
+//else returns 0
+uint8_t HX711_ADC::update() 
+{
+	//#ifndef USE_PC_INT
+	byte dout = digitalRead(doutPin); //check if conversion is ready
+	if (!dout) {
+		conversion24bit();
+		//if(s) Serial.print(s);
+	}
+	else convRslt = 0;
+	return convRslt;
+	//#endif
+}
+
 float HX711_ADC::getData() // return fresh data from the moving average data set
 {
 	long k = 0;
 	long data = 0;
-	byte dout = digitalRead(doutPin); //check if conversion is ready
-	if (!dout) {
-		conversion24bit();
-	}
-	data = smoothedData();
-	data = (data >> divBit) - tareOffset;
+	data = smoothedData() - tareOffset;
+	data = (data >> divBit);
 	float x = (float)data / calFactor;
 	return x;
 }
@@ -109,20 +143,23 @@ long HX711_ADC::smoothedData()
 	long data = 0;
 	long L = 0xFFFFFF;
 	long H = 0x00;
+	cli();
 	for (uint8_t r = 0; r < DATA_SET; r++) {
 		if (L > dataSampleSet[r]) L = dataSampleSet[r]; // find lowest value
 		if (H < dataSampleSet[r]) H = dataSampleSet[r]; // find highest value
 		data += dataSampleSet[r];
 	}
+	sei();
 	if(IGN_LOW_SAMPLE) data -= L; //remove lowest value
 	if(IGN_HIGH_SAMPLE) data -= H; //remove highest value
 	return data;
 }
 
-long HX711_ADC::conversion24bit()  //returns 24 bit data and starts the next conversion
+uint8_t HX711_ADC::conversion24bit()  //read 24 bit data and start the next conversion
 {
 	unsigned long data = 0;
 	uint8_t dout;
+	convRslt = 0;
 	for (uint8_t i = 0; i < (24 + GAIN); i++) { //read 24 bit data + set gain and start next conversion
 		delayMicroseconds(1); // required for faster mcu's?
 		digitalWrite(sckPin, 1);
@@ -137,15 +174,28 @@ long HX711_ADC::conversion24bit()  //returns 24 bit data and starts the next con
 		digitalWrite(sckPin, 0);
 	}
 	data = data ^ 0x800000; // if out of range (min), change to 0
-	// handle new converion value
 	if (readIndex == DATA_SET - 1) {
 		readIndex = 0;
 	}
 	else {
 		readIndex++;
 	}
-	dataSampleSet[readIndex] = (long)data;
-	return (long)data;
+	if(data > 0)  {
+		convRslt++;
+		dataSampleSet[readIndex] = (long)data;
+		if(doTare) {
+			if (tareTimes < DATA_SET) {
+			tareTimes++;
+			}
+			else {
+				tareOffset = smoothedData();
+				tareTimes = 0;
+				doTare = 0;
+				tareStatus = 1;
+				convRslt++;
+			}
+		}
+	}
 }
 
 void HX711_ADC::powerDown() 
@@ -172,11 +222,10 @@ float HX711_ADC::getSingleConversion()
 	long data = 0;
 	byte dout = digitalRead(doutPin); //check if conversion is ready
 	if (!dout) {
-		data = conversion24bit();
+		//data = conversion24bit();
 		data = data - tareOffset;
 		float x = (float) data/calFactor;
 		return x;
 	}
 	else return -1;
 }
-
