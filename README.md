@@ -18,7 +18,7 @@ ADC noise is worst on the 80SPS rate. Unless very quick settling time is require
 Start up and tare: from start-up/reset, the tare function seems to be more accurate if called after a "pre-warm-up" period running conversions continuously for a few seconds. See example files.
 
 Hardware and ADC noise:
-Wires between HX711 and load cell should be twisted and as kept as short as possible.
+Wires between HX711 and load cell should be twisted and kept as short as possible.
 Most available HX711 modules seems to follow the reference design, but be aware that some modules are poorly designed with under-sized capacitors, and noisy readings.
 The Sparkfun module seems to differ from most other available modules as it has some additional components for noise reduction. 
  
