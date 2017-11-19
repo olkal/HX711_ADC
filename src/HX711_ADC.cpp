@@ -143,13 +143,11 @@ long HX711_ADC::smoothedData()
 	long data = 0;
 	long L = 0xFFFFFF;
 	long H = 0x00;
-	cli();
 	for (uint8_t r = 0; r < DATA_SET; r++) {
 		if (L > dataSampleSet[r]) L = dataSampleSet[r]; // find lowest value
 		if (H < dataSampleSet[r]) H = dataSampleSet[r]; // find highest value
 		data += dataSampleSet[r];
 	}
-	sei();
 	if(IGN_LOW_SAMPLE) data -= L; //remove lowest value
 	if(IGN_HIGH_SAMPLE) data -= H; //remove highest value
 	return data;

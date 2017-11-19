@@ -11,7 +11,7 @@
 #include <HX711_ADC.h>
 
 //HX711 constructor (dout pin, sck pin)
-HX711_ADC LoadCell(A0, A1);
+HX711_ADC LoadCell(4, 5);
 
 long t;
 
