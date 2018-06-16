@@ -55,6 +55,7 @@ class HX711_ADC
 		void powerUp(); 
 		bool getTareStatus();						// returns 1 if tareNoDelay() operation is complete
 		long getTareOffset();
+		void setTareOffset(long newoffset);
 		uint8_t update(); 							//if conversion is ready; read out 24 bit data and add to data set
 
 	protected:
@@ -66,7 +67,7 @@ class HX711_ADC
 		float calFactor;
 		long dataSampleSet[DATA_SET + 1]; 			// data set, make voltile if interrupt is used 
 		long tareOffset;
-		int readIndex;
+		int readIndex = 0;
 		long timeStamp;
 		uint8_t isFirst = 1;
 		uint8_t tareTimes;

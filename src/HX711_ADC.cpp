@@ -207,11 +207,17 @@ void HX711_ADC::powerUp()
 	digitalWrite(sckPin, LOW);
 }
 
+//get the tare offset (raw data value output without the scale "CalFactor")
 long HX711_ADC::getTareOffset() 
 {
 	return tareOffset;
 }
 
+//set new tare offset (raw data value input without the scale "CalFactor")
+void HX711_ADC::setTareOffset(long newoffset)
+{
+	tareOffset = newoffset;
+}
 
 //for testing only:
 //if ready: returns 24 bit data and starts the next conversion, else returns -1

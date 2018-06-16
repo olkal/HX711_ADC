@@ -24,4 +24,7 @@ Hardware and ADC noise:
 Wires between HX711 and load cell should be twisted and kept as short as possible.
 Most available HX711 modules seems to follow the reference design, but be aware that some modules are poorly designed with under-sized capacitors, and noisy readings.
 The Sparkfun module seems to differ from most other available modules as it has some additional components for noise reduction. 
- 
+
+Update 1.0.2:
+- Implemented requested function setTareOffset(long newoffset)
+- Initializing of the index counter in the class declaration: readIndex = 0
