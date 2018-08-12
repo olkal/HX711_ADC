@@ -44,11 +44,23 @@ void HX711_ADC::begin(uint8_t gain)
 *   Running this for 1-5s before tare() seems to improve the tare accuracy */
 void HX711_ADC::start(unsigned int t)
 {
+	t = millis() + t;
+	// t += 400;
+	while(millis() < t) {
+		getData();
+	}
+	delay(500);
+	tare();
+	tareStatus = 0;
+}	
+
+void HX711_ADC::startWithoutTare(unsigned int t, long offset)
+{
 	t += 400;
 	while(millis() < t) {
 		getData();
 	}
-	tare();
+	tareOffset = offset;
 	tareStatus = 0;
 }	
 
@@ -226,10 +238,15 @@ float HX711_ADC::getSingleConversion()
 	long data = 0;
 	byte dout = digitalRead(doutPin); //check if conversion is ready
 	if (!dout) {
-		//data = conversion24bit();
+		data = conversion24bit();
 		data = data - tareOffset;
 		float x = (float) data/calFactor;
 		return x;
 	}
 	else return -1;
+}
+
+int HX711_ADC::getReadIndex()
+{
+	return readIndex;
 }
