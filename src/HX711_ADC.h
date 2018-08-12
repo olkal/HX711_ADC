@@ -11,7 +11,7 @@
 
 #include <Arduino.h>
 
-#define SAMPLES 			16									// no of samples in moving average data set, value must be 4, 8, 16, 32 or 64
+#define SAMPLES 			32									// no of samples in moving average data set, value must be 4, 8, 16, 32 or 64
 #define IGN_HIGH_SAMPLE 	1 									// adds one sample to the set and ignore peak high sample, value must be 0 or 1
 #define IGN_LOW_SAMPLE 		1 									// adds one sample to the set and ignore peak low sample, value must be 0 or 1
 
@@ -44,6 +44,7 @@ class HX711_ADC
 		void begin();
 		void begin(uint8_t gain);
 		void start(unsigned int t); 				// start and tare one HX711
+		void startWithoutTare(unsigned int t, long offset);
 		int startMultiple(unsigned int t); 			//start and tare multiple HX711 simultaniously
 		void tare(); 								// zero the scale, wait for tare to finnish
 		void tareNoDelay(); 						// zero the scale, do tare in loop without waiting for tare to finnish
@@ -57,6 +58,7 @@ class HX711_ADC
 		long getTareOffset();
 		void setTareOffset(long newoffset);
 		uint8_t update(); 							//if conversion is ready; read out 24 bit data and add to data set
+		int getReadIndex();
 
 	protected:
 		uint8_t conversion24bit(); 					//if conversion is ready: returns 24 bit data and starts the next conversion
