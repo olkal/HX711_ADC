@@ -5,7 +5,7 @@ Tare function can also be performed without halting the mcu.
  
 Filtering and smoothing: "Moving average" method from a rolling data set combined with removal of high/low outliers is used for the retrieved value.
 
-Selectable values in the .h file:
+Selectable values in the config.h file:
 - Moving average data set of 4, 8, 16, 32, 64 or 128 samples (default:16).
 - Ignore high outlier; one sample is added to the data set, the peak high value of all samples in the data set is ignored (default:1)
 - Ignore low outlier; one sample is added to the data set, the peak low value of all samples in the data set is ignored (default:1)
