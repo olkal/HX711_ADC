@@ -34,6 +34,8 @@ Update 1.1.0:
 - Added function getConversionTime() for testing and debugging purpose
 - Added function getSPS() for testing and debugging purpose
 - Added function getTareTimeoutFlag() for testing and debugging purpose
+- Added function disableTareTimeout()	for testing and debugging purpose
+- Added function getSettlingTime() for testing and debugging purpose
 - Added example sketch "HX711_ADC_Calibration" with option to save the calibration value to eeprom
 - Added example sketch "HX711_ADC_Testing" with some of the above mentioned functions for tare timeout, samplerate, conversion time, etc
 - In example sketches setup, option included to fetch calibration value from eeprom
