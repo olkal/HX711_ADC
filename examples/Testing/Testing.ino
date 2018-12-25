@@ -14,57 +14,58 @@
 //HX711 constructor (dout pin, sck pin):
 HX711_ADC LoadCell(4, 5);
 
-const int eepromAdress = 0;
+int eepromAdress = 0;
 
 long t;
 
 void setup() {
-  
   float calValue; // calibration value
-  calValue = 696.0; // uncomment this if you want to set this value in the sketch 
-  #if defined(ESP8266) 
-  //EEPROM.begin(sizeof calValue); // uncomment this if you use ESP8266 and want to fetch the value from eeprom
+  calValue = 696.0; // uncomment this if you want to set this value in the sketch
+  #if defined(ESP8266)
+  //EEPROM.begin(sizeof calValue); // uncomment this if you use ESP8266 and want to fetch this value from eeprom
   #endif
-  //EEPROM.get(eepromAdress, calValue); // uncomment this if you want to fetch the value from eeprom
-  
+  //EEPROM.get(eepromAdress, calValue); // uncomment this if you want to fetch this value from eeprom
+
   Serial.begin(9600); delay(10);
   Serial.println();
   Serial.println("Starting...");
   LoadCell.begin();
   long stabilisingtime = 2000; // tare preciscion can be improved by adding a few seconds of stabilising time
   LoadCell.start(stabilisingtime);
-  if(LoadCell.getTareTimeoutFlag()) {
+  if (LoadCell.getTareTimeoutFlag()) {
     Serial.println("Tare timeout, check MCU>HX711 wiring and pin designations");
   }
   else {
-    LoadCell.setCalFactor(calValue); // set calibration value (float)
+    LoadCell.setCalFactor(calValue); // set calibration factor (float)
     Serial.println("Startup + tare is complete");
   }
+  while (!LoadCell.update());
+  Serial.print("Calibration factor: ");
+  Serial.println(LoadCell.getCalFactor());  
+  Serial.print("HX711 measured conversion time ms: ");
+  Serial.println(LoadCell.getConversionTime());
+  Serial.print("HX711 measured sampling rate HZ: ");
+  Serial.println(LoadCell.getSPS());
+  Serial.print("HX711 measured settlingtime ms: ");
+  Serial.println(LoadCell.getSettlingTime());
+  Serial.println("Note that the settling time may increase significantly if you use delay() in your sketch!");
+  if (LoadCell.getSPS() < 7) {
+    Serial.println("!!Sampling rate is lower than specification, check MCU>HX711 wiring and pin designations");
+  }
+  else if (LoadCell.getSPS() > 100) {
+    Serial.println("!!Sampling rate is higher than specification, check MCU>HX711 wiring and pin designations");
+  }
 }
-
 void loop() {
   //update() should be called at least as often as HX711 sample rate; >10Hz@10SPS, >80Hz@80SPS
-  //use of delay in sketch will reduce effective sample rate (be carefull with use of delay() in the loop)
+  //use of delay in sketch will reduce effective sample rate (be carefull with delay() in the loop)
   LoadCell.update();
 
-  //get smoothed value from data set
+  //get smoothed value from data set + current calibration factor
   if (millis() > t + 250) {
     float i = LoadCell.getData();
     Serial.print("Load_cell output val: ");
     Serial.println(i);
     t = millis();
   }
-
-  //receive from serial terminal
-  if (Serial.available() > 0) {
-    float i;
-    char inByte = Serial.read();
-    if (inByte == 't') LoadCell.tareNoDelay();
-  }
-
-  //check if last tare operation is complete
-  if (LoadCell.getTareStatus() == true) {
-    Serial.println("Tare complete");
-  }
-
 }

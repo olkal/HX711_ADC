@@ -25,6 +25,19 @@ Wires between HX711 and load cell should be twisted and kept as short as possibl
 Most available HX711 modules seems to follow the reference design, but be aware that some modules are poorly designed with under-sized capacitors, and noisy readings.
 The Sparkfun module seems to differ from most other available modules as it has some additional components for noise reduction. 
 
+Update 1.1.0:
+- Data set configuration (data set, number of samples) has been moved from HX711_ADC.h to the new file config.h
+- Included "yield" in function tare() to avoid crash on ESP8266 if wiring is incorrect
+- Timeout added to the tare() function to avoid endless loop if wiring is incorrect
+- Added function getSingleConversionRaw() for testing and debugging purpose
+- Added function getReadIndex() for testing and debugging purpose
+- Added function getConversionTime() for testing and debugging purpose
+- Added function getSPS() for testing and debugging purpose
+- Added function getTareTimeoutFlag() for testing and debugging purpose
+- Added example sketch "HX711_ADC_Calibration" with option to save the calibration value to eeprom
+- Added example sketch "HX711_ADC_Testing" with some of the above mentioned functions for tare timeout, samplerate, conversion time, etc
+- In example sketches setup, option included to fetch calibration value from eeprom
+
 Update 1.0.2:
 - Implemented requested function setTareOffset(long newoffset)
 - Initializing of the index counter in the class declaration: readIndex = 0

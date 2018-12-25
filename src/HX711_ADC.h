@@ -10,10 +10,11 @@
 #define HX711_ADC_h
 
 #include <Arduino.h>
+#include "config.h"
 
-#define SAMPLES 			16									// no of samples in moving average data set, value must be 4, 8, 16, 32 or 64
-#define IGN_HIGH_SAMPLE 	1 									// adds one sample to the set and ignore peak high sample, value must be 0 or 1
-#define IGN_LOW_SAMPLE 		1 									// adds one sample to the set and ignore peak low sample, value must be 0 or 1
+/*
+Note: HX711_ADC configuration values has been moved to file config.h
+*/
 
 #define DATA_SET 	SAMPLES + IGN_HIGH_SAMPLE + IGN_HIGH_SAMPLE // total samples in memory
 
@@ -43,14 +44,21 @@ class HX711_ADC
 		void setGain(uint8_t gain = 128); 			//value should be 32, 64 or 128*
 		void begin();
 		void begin(uint8_t gain);
-		void start(unsigned int t); 				// start and tare one HX711
+		int start(unsigned int t); 				// start and tare one HX711
 		int startMultiple(unsigned int t); 			//start and tare multiple HX711 simultaniously
 		void tare(); 								// zero the scale, wait for tare to finnish
 		void tareNoDelay(); 						// zero the scale, do tare in loop without waiting for tare to finnish
 		void setCalFactor(float cal); 				//calibration factor, raw data is divided by this value to convert to readable data
 		float getCalFactor(); 						// returns the current calibration factor
 		float getData(); 							// returns data from the moving average data set 
-		float getSingleConversion(); 				//for testing
+		float getSingleConversion(); 				//for testing and debugging
+		long getSingleConversionRaw(); 				//for testing and debugging
+		int getReadIndex(); 						//for testing and debugging
+		float getConversionTime(); 					//for testing and debugging
+		float getSPS();								//for testing and debugging
+		bool getTareTimeoutFlag();					//for testing and debugging
+		void disableTareTimeout();					//for testing and debugging
+		long getSettlingTime();						//for testing and debugging
 		void powerDown(); 
 		void powerUp(); 
 		bool getTareStatus();						// returns 1 if tareNoDelay() operation is complete
@@ -68,7 +76,8 @@ class HX711_ADC
 		long dataSampleSet[DATA_SET + 1]; 			// data set, make voltile if interrupt is used 
 		long tareOffset;
 		int readIndex = 0;
-		long timeStamp;
+		unsigned long conversionStartTime;
+		unsigned long conversionTime;
 		uint8_t isFirst = 1;
 		uint8_t tareTimes;
 		const uint8_t divBit = DIVB;
@@ -76,6 +85,9 @@ class HX711_ADC
 		bool startStatus;
 		uint8_t convRslt;
 		bool tareStatus;
+		const unsigned int tareTimeOut = (DATA_SET * 110) + 500; // tare timeout time in ms, no of samples * 110ms (10SPS + 10%) + 500ms margin
+		bool tareTimeoutFlag;
+		bool tareTimeoutDisable = 0;
 };	
 
 #endif

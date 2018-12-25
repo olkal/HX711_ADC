@@ -6,19 +6,39 @@
 // Tested with MCU  : Arduino Nano
 //-------------------------------------------------------------------------------------
 // This is an example sketch on how to use this library for two ore more HX711 modules
-// Settling time (number of samples) and data filtering can be adjusted in the HX711_ADC.h file
+// Settling time (number of samples) and data filtering can be adjusted in the config.h file
 
 #include <HX711_ADC.h>
+#include <EEPROM.h>
 
 //HX711 constructor (dout pin, sck pin)
 HX711_ADC LoadCell_1(4, 5); //HX711 1
 HX711_ADC LoadCell_2(6, 7); //HX711 2
 
+const int eepromAdress_1 = 0; // eeprom adress for calibration value load cell 1
+const int eepromAdress_2 = 4; // eeprom adress for calibration value load cell 2
+
 long t;
 
 void setup() {
-  Serial.begin(9600);
-  Serial.println("Wait...");
+  
+  float calValue_1; // calibration value load cell 1
+  float calValue_2; // calibration value load cell 2
+  
+  calValue_1 = 696.0; // uncomment this if you want to set this value in the sketch 
+  calValue_2 = 733.0; // uncomment this if you want to set this value in the sketch 
+  #if defined(ESP8266) 
+  //EEPROM.begin(sizeof calValue_1); // uncomment this if you use ESP8266 and want to fetch the value from eeprom
+  #endif
+  //EEPROM.get(eepromAdress_1, calValue_1); // uncomment this if you want to fetch the value from eeprom
+  #if defined(ESP8266) 
+  //EEPROM.begin(sizeof calValue_2); // uncomment this if you use ESP8266 and want to fetch the value from eeprom
+  #endif
+  //EEPROM.get(eepromAdress_2, calValue_2); // uncomment this if you want to fetch the value from eeprom
+  
+  Serial.begin(9600); delay(10);
+  Serial.println();
+  Serial.println("Starting...");
   LoadCell_1.begin();
   LoadCell_2.begin();
   long stabilisingtime = 2000; // tare preciscion can be improved by adding a few seconds of stabilising time
@@ -28,14 +48,14 @@ void setup() {
     if (!loadcell_1_rdy) loadcell_1_rdy = LoadCell_1.startMultiple(stabilisingtime);
     if (!loadcell_2_rdy) loadcell_2_rdy = LoadCell_2.startMultiple(stabilisingtime);
   }
-  LoadCell_1.setCalFactor(696.0); // user set calibration factor (float)
-  LoadCell_2.setCalFactor(733.0); // user set calibration factor (float)
+  LoadCell_1.setCalFactor(calValue_1); // user set calibration value (float)
+  LoadCell_2.setCalFactor(calValue_2); // user set calibration value (float)
   Serial.println("Startup + tare is complete");
 }
 
 void loop() {
   //update() should be called at least as often as HX711 sample rate; >10Hz@10SPS, >80Hz@80SPS
-  //longer delay in scetch will reduce effective sample rate (be carefull with delay() in loop)
+  //longer delay in scetch will reduce effective sample rate (be carefull with use of delay() in the loop)
   LoadCell_1.update();
   LoadCell_2.update();
 

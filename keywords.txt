@@ -22,11 +22,18 @@ setCalFactor	KEYWORD2
 getCalFactor	KEYWORD2
 getData	KEYWORD2
 getSingleConversion	KEYWORD2
+getSingleConversionRaw	KEYWORD2
+getReadIndex	KEYWORD2
+getConversionTime	KEYWORD2
+getSPS	KEYWORD2
+getTareTimeoutFlag	KEYWORD2
+disableTareTimeout	KEYWORD2
+getSettlingTime	KEYWORD2
 powerDown	KEYWORD2
 powerUp	KEYWORD2
 getTareOffset	KEYWORD2
 getTareStatus	KEYWORD2
-
+setTareOffset	KEYWORD2
 
 #######################################
 # Constants (LITERAL1)
