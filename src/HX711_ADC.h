@@ -85,7 +85,7 @@ class HX711_ADC
 		bool startStatus;
 		uint8_t convRslt;
 		bool tareStatus;
-		const unsigned int tareTimeOut = (DATA_SET * 110) + 500; // tare timeout time in ms, no of samples * 110ms (10SPS + 10%) + 500ms margin
+		unsigned int tareTimeOut = (SAMPLES + IGN_HIGH_SAMPLE + IGN_HIGH_SAMPLE) * 150; // tare timeout time in ms, no of samples * 150ms (10SPS + 50% margin)
 		bool tareTimeoutFlag;
 		bool tareTimeoutDisable = 0;
 };	
