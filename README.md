@@ -1,5 +1,5 @@
 
-The is an Arduino library for the HX711 24-bit ADC for weight scales.
+Thee is an Arduino library for the HX711 24-bit ADC for weight scales.
 Data retrieval from the HX711 is done without halting the mcu, also on the 10SPS rate setting and with Multiple HX711's performing conversions simultaneously.
 Tare function can also be performed without halting the mcu.
  
