@@ -59,12 +59,17 @@ int HX711_ADC::start(unsigned int t)
 int HX711_ADC::startMultiple(unsigned int t)
 {
 	if(startStatus == 0) {
-		unsigned long ts = millis();
 		if(isFirst) {
-			t += 400; //min time for HX711 to be stable
+			startMultipleTimeStamp = millis();
+
+			if (t < 400) {
+			startMultipleWaitTime = t + 400; //min time for HX711 to be stable
+			} else {
+				startMultipleWaitTime = t;
+			}
 			isFirst = 0;
 		}	
-		if(millis() < ts + t) {
+		if(millis() < startMultipleTimeStamp + startMultipleWaitTime) {
 			update(); //do conversions during stabilization time
 			return 0;
 		}
