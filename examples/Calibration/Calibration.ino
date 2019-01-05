@@ -58,12 +58,11 @@ void calibrate() {
       char inByte = Serial.read();
       if (inByte == 'y') {
         #if defined(ESP8266) 
-        EEPROM.begin(sizeof c);
+        EEPROM.begin(512);
         #endif
         EEPROM.put(eepromAdress, c);
         #if defined(ESP8266)
         EEPROM.commit();
-        //EEPROM.begin(sizeof c);
         #endif
         EEPROM.get(eepromAdress, c);
         Serial.print("Value ");
@@ -115,12 +114,11 @@ void changeSavedCalFactor() {
       char inByte = Serial.read();
       if (inByte == 'y') {
         #if defined(ESP8266)
-        EEPROM.begin(sizeof c);
+        EEPROM.begin(512);
         #endif
         EEPROM.put(eepromAdress, c);
         #if defined(ESP8266)
         EEPROM.commit();
-        //EEPROM.begin(sizeof c);
         #endif
         EEPROM.get(eepromAdress, c);
         Serial.print("Value ");

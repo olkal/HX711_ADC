@@ -15,8 +15,8 @@
 HX711_ADC LoadCell_1(4, 5); //HX711 1
 HX711_ADC LoadCell_2(6, 7); //HX711 2
 
-const int eepromAdress_1 = 0; // eeprom adress for calibration value load cell 1
-const int eepromAdress_2 = 4; // eeprom adress for calibration value load cell 2
+const int eepromAdress_1 = 0; // eeprom adress for calibration value load cell 1 (4 bytes)
+const int eepromAdress_2 = 4; // eeprom adress for calibration value load cell 2 (4 bytes)
 
 long t;
 
@@ -28,12 +28,9 @@ void setup() {
   calValue_1 = 696.0; // uncomment this if you want to set this value in the sketch 
   calValue_2 = 733.0; // uncomment this if you want to set this value in the sketch 
   #if defined(ESP8266) 
-  //EEPROM.begin(sizeof calValue_1); // uncomment this if you use ESP8266 and want to fetch the value from eeprom
+  //EEPROM.begin(512); // uncomment this if you use ESP8266 and want to fetch the value from eeprom
   #endif
   //EEPROM.get(eepromAdress_1, calValue_1); // uncomment this if you want to fetch the value from eeprom
-  #if defined(ESP8266) 
-  //EEPROM.begin(sizeof calValue_2); // uncomment this if you use ESP8266 and want to fetch the value from eeprom
-  #endif
   //EEPROM.get(eepromAdress_2, calValue_2); // uncomment this if you want to fetch the value from eeprom
   
   Serial.begin(9600); delay(10);

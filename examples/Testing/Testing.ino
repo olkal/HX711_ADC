@@ -22,7 +22,7 @@ void setup() {
   float calValue; // calibration value
   calValue = 696.0; // uncomment this if you want to set this value in the sketch
   #if defined(ESP8266)
-  //EEPROM.begin(sizeof calValue); // uncomment this if you use ESP8266 and want to fetch this value from eeprom
+  //EEPROM.begin(512); // uncomment this if you use ESP8266 and want to fetch this value from eeprom
   #endif
   //EEPROM.get(eepromAdress, calValue); // uncomment this if you want to fetch this value from eeprom
 
