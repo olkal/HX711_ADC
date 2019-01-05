@@ -71,6 +71,7 @@ int HX711_ADC::startMultiple(unsigned int t)
 		}	
 		if(millis() < startMultipleTimeStamp + startMultipleWaitTime) {
 			update(); //do conversions during stabilization time
+			yield();
 			return 0;
 		}
 		else { //do tare after stabilization time is up
