@@ -73,7 +73,7 @@ class HX711_ADC
 		uint8_t doutPin; 							//HX711 dout pin
 		uint8_t GAIN;
 		float calFactor;
-		long dataSampleSet[DATA_SET + 1]; 			// data set, make voltile if interrupt is used 
+		volatile long dataSampleSet[DATA_SET + 1]; 			// data set, make voltile if interrupt is used 
 		long tareOffset;
 		int readIndex = 0;
 		unsigned long conversionStartTime;
