@@ -40,6 +40,3 @@ Update 1.1.0:
 - Added example sketch "HX711_ADC_Testing" with some of the above mentioned functions for tare timeout, samplerate, conversion time, etc
 - In example sketches setup, option included to fetch calibration value from eeprom
 
-Update 1.0.2:
-- Implemented requested function setTareOffset(long newoffset)
-- Initializing of the index counter in the class declaration: readIndex = 0
