@@ -39,6 +39,6 @@ Update 1.1.0:
 - Added example sketch "Calibration" with option to save the calibration value to eeprom
 - In example sketches setup, option included to retrieve calibration value from eeprom
 - Added example sketch "Testing" with some of the above mentioned functions for tare timeout, samplerate, conversion time, etc
-- Added example sketch "Read_1x_load_cell_interrupt_driven", it can be useful to enable an interrupt to trigger the update function if you have other time consuming code in your sketch loop that otherwise will affect settlingtime, i.e. writing to a graphic LCD display
+- Added example sketch "Read_1x_load_cell_interrupt_driven", it can be useful to enable an interrupt to trigger the update function if you have other time consuming code in your sketch loop (i.e. writing to a graphic LCD display) that otherwise could affect the settling time
 
 
