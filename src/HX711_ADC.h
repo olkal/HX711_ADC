@@ -83,6 +83,8 @@ class HX711_ADC
 		const uint8_t divBit = DIVB;
 		bool doTare;
 		bool startStatus;
+		long startMultipleTimeStamp;
+		long startMultipleWaitTime;
 		uint8_t convRslt;
 		bool tareStatus;
 		unsigned int tareTimeOut = (SAMPLES + IGN_HIGH_SAMPLE + IGN_HIGH_SAMPLE) * 150; // tare timeout time in ms, no of samples * 150ms (10SPS + 50% margin)
