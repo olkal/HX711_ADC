@@ -238,34 +238,6 @@ void HX711_ADC::setTareOffset(long newoffset)
 }
 
 //for testing and debugging:
-//returns single conversion and starts the next conversion if ready, else returns -1
-float HX711_ADC::getSingleConversion()  
-{	
-	long data = 0;
-	byte dout = digitalRead(doutPin); //check if conversion is ready
-	if (!dout) {
-		data = conversion24bit();
-		data = data - tareOffset;
-		float x = (float) data/calFactor;
-		return x;
-	}
-	else return -1;
-}
-
-//for testing and debugging:
-//returns single conversion 24 bit raw data and starts the next conversion if ready, else returns -1
-long HX711_ADC::getSingleConversionRaw()  
-{	
-	long data = 0;
-	byte dout = digitalRead(doutPin); //check if conversion is ready
-	if (!dout) {
-		data = conversion24bit();
-		return data;
-	}
-	else return -1;
-}
-
-//for testing and debugging:
 //returns current value of readIndex
 int HX711_ADC::getReadIndex()
 {

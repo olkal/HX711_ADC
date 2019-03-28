@@ -16,13 +16,19 @@
 Note: HX711_ADC configuration values has been moved to file config.h
 */
 
-#define DATA_SET 	SAMPLES + IGN_HIGH_SAMPLE + IGN_HIGH_SAMPLE // total samples in memory
+#define DATA_SET 	SAMPLES + IGN_HIGH_SAMPLE + IGN_LOW_SAMPLE // total samples in memory
 
-#if (SAMPLES  != 4) & (SAMPLES  != 8) & (SAMPLES  != 16) & (SAMPLES  != 32) & (SAMPLES  != 64) & (SAMPLES  != 128)
+#if (SAMPLES  != 1) & (SAMPLES  != 4) & (SAMPLES  != 8) & (SAMPLES  != 16) & (SAMPLES  != 32) & (SAMPLES  != 64) & (SAMPLES  != 128)
 	#error "number of SAMPLES not valid!"
 #endif
 
-#if (SAMPLES == 4)
+#if (SAMPLES  == 1) & ((IGN_HIGH_SAMPLE  != 0) | (IGN_LOW_SAMPLE  != 0))
+	#error "number of SAMPLES not valid!"
+#endif
+
+#if (SAMPLES == 1)
+#define DIVB 0
+#elif (SAMPLES == 4)
 #define DIVB 2
 #elif  (SAMPLES == 8)
 #define DIVB 3
