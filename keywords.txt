@@ -17,7 +17,7 @@ start	KEYWORD2
 startMultiple	KEYWORD2
 setGain	KEYWORD2
 tare	KEYWORD2
-taretareNoDelay	KEYWORD2
+tareNoDelay	KEYWORD2
 setCalFactor	KEYWORD2
 getCalFactor	KEYWORD2
 getData	KEYWORD2
