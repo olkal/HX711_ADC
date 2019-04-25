@@ -46,11 +46,12 @@ void setup() {
     LoadCell.setCalFactor(calValue); // set calibration value (float)
     Serial.println("Startup + tare is complete");
   }
-  attachInterrupt(doutPin, ISR, FALLING);
+
+  attachInterrupt(digitalPinToInterrupt(doutPin), whenreadyISR, FALLING);
 }
 
 //interrupt routine:
-void ISR() {
+void whenreadyISR() {
   LoadCell.update();
 }
 
