@@ -46,7 +46,7 @@ void setup() {
     LoadCell.setCalFactor(calValue); // set calibration value (float)
     Serial.println("Startup + tare is complete");
   }
-
+  
   attachInterrupt(digitalPinToInterrupt(doutPin), whenreadyISR, FALLING);
 }
 

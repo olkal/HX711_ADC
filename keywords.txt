@@ -34,6 +34,8 @@ powerUp	KEYWORD2
 getTareOffset	KEYWORD2
 getTareStatus	KEYWORD2
 setTareOffset	KEYWORD2
+setSamplesInUse	KEYWORD2
+getSamplesInUse	KEYWORD2
 
 #######################################
 # Constants (LITERAL1)

@@ -18,7 +18,7 @@ Note: HX711_ADC configuration values has been moved to file config.h
 
 #define DATA_SET 	SAMPLES + IGN_HIGH_SAMPLE + IGN_LOW_SAMPLE // total samples in memory
 
-#if (SAMPLES  != 1) & (SAMPLES  != 4) & (SAMPLES  != 8) & (SAMPLES  != 16) & (SAMPLES  != 32) & (SAMPLES  != 64) & (SAMPLES  != 128)
+#if (SAMPLES  != 1) & (SAMPLES  != 2) & (SAMPLES  != 4) & (SAMPLES  != 8) & (SAMPLES  != 16) & (SAMPLES  != 32) & (SAMPLES  != 64) & (SAMPLES  != 128)
 	#error "number of SAMPLES not valid!"
 #endif
 
@@ -28,6 +28,8 @@ Note: HX711_ADC configuration values has been moved to file config.h
 
 #if (SAMPLES == 1)
 #define DIVB 0
+#elif (SAMPLES == 2)
+#define DIVB 1
 #elif (SAMPLES == 4)
 #define DIVB 2
 #elif  (SAMPLES == 8)
@@ -46,11 +48,11 @@ class HX711_ADC
 {	
 		
 	public:
-		HX711_ADC(uint8_t dout, uint8_t sck); 	//constructor
+		HX711_ADC(uint8_t dout, uint8_t sck); 		//constructor
 		void setGain(uint8_t gain = 128); 			//value should be 32, 64 or 128*
 		void begin();
 		void begin(uint8_t gain);
-		int start(unsigned int t); 				// start and tare one HX711
+		int start(unsigned int t); 					// start and tare one HX711
 		int startMultiple(unsigned int t); 			//start and tare multiple HX711 simultaniously
 		void tare(); 								// zero the scale, wait for tare to finnish
 		void tareNoDelay(); 						// zero the scale, do tare in loop without waiting for tare to finnish
@@ -69,6 +71,8 @@ class HX711_ADC
 		long getTareOffset();
 		void setTareOffset(long newoffset);
 		uint8_t update(); 							//if conversion is ready; read out 24 bit data and add to data set
+		void setSamplesInUse(int samples);			//overide number of samples in use
+		int getSamplesInUse();						//returns current number of samples in use
 
 	protected:
 		uint8_t conversion24bit(); 					//if conversion is ready: returns 24 bit data and starts the next conversion
@@ -84,7 +88,8 @@ class HX711_ADC
 		unsigned long conversionTime;
 		uint8_t isFirst = 1;
 		uint8_t tareTimes;
-		const uint8_t divBit = DIVB;
+		uint8_t divBit = DIVB;
+		const uint8_t divBitCompiled = DIVB;
 		bool doTare;
 		bool startStatus;
 		long startMultipleTimeStamp;
@@ -94,6 +99,9 @@ class HX711_ADC
 		unsigned int tareTimeOut = (SAMPLES + IGN_HIGH_SAMPLE + IGN_HIGH_SAMPLE) * 150; // tare timeout time in ms, no of samples * 150ms (10SPS + 50% margin)
 		bool tareTimeoutFlag;
 		bool tareTimeoutDisable = 0;
+		int samplesInUse = SAMPLES;
+		long lastSmoothedData;
+		
 };	
 
 #endif

@@ -45,6 +45,12 @@ void setup() {
     if (!loadcell_1_rdy) loadcell_1_rdy = LoadCell_1.startMultiple(stabilisingtime);
     if (!loadcell_2_rdy) loadcell_2_rdy = LoadCell_2.startMultiple(stabilisingtime);
   }
+  if (LoadCell_1.getTareTimeoutFlag()) {
+    Serial.println("Tare timeout, check MCU>HX711 no.1 wiring and pin designations");
+  }
+  if (LoadCell_2.getTareTimeoutFlag()) {
+    Serial.println("Tare timeout, check MCU>HX711 no.2 wiring and pin designations");
+  }
   LoadCell_1.setCalFactor(calValue_1); // user set calibration value (float)
   LoadCell_2.setCalFactor(calValue_2); // user set calibration value (float)
   Serial.println("Startup + tare is complete");
