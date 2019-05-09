@@ -1,4 +1,6 @@
 
+Latest release and change log here: https://github.com/olkal/HX711_ADC/releases
+
 This an Arduino library for the HX711 24-bit ADC for weight scales.
 Data retrieval from the HX711 is done without halting the mcu, also on the 10SPS rate setting and with Multiple HX711's performing conversions simultaneously.
 Tare function can also be performed without halting the mcu.
@@ -27,4 +29,3 @@ Wires between HX711 and load cell should be twisted and kept as short as possibl
 Most available HX711 modules seems to follow the reference design, but be aware that some modules are poorly designed with under-sized capacitors, and noisy readings.
 The Sparkfun module seems to differ from most other available modules as it has some additional components for noise reduction. 
 
-Latest release and change log here: https://github.com/olkal/HX711_ADC/releases
