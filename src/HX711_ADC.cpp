@@ -47,7 +47,7 @@ int HX711_ADC::start(unsigned int t)
 	t += 400;
 	while(millis() < t) 
 	{
-		getData();
+		update();
 		yield();
 	}
 	tare();
