@@ -11,7 +11,7 @@ Selectable values in the config.h file:
 - Moving average data set of 1, 2, 4, 8, 16, 32, 64 or 128 samples (default:16).
 - Ignore high outlier; one sample is added to the data set, the peak high value of all samples in the data set is ignored (default:1)
 - Ignore low outlier; one sample is added to the data set, the peak low value of all samples in the data set is ignored (default:1)
-- Enable delay for writing to sck pin. Could be required for faster mcu's (default: no delay)
+- Enable delay for writing to sck pin. This could be required for faster mcu's like the ESP32 (default: no delay)
 - Disable interrupts when sck pin is high. This could be required to avoid "power down mode" if you have some other time consuming (>60µs) interrupt routines running (default: interrupts enabled)
 
 Caution: using a high number of samples will smooth the output value nicely but will also increase settling time and start-up/tare time (but not response time). It will also eat some memory.
