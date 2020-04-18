@@ -1,4 +1,4 @@
-
+#18.04.2020: New version 1.2.0!
 Latest release and change log here: https://github.com/olkal/HX711_ADC/releases
 
 This an Arduino library for the HX711 24-bit ADC for weight scales.
@@ -16,16 +16,15 @@ Selectable values in the config.h file:
 
 Caution: using a high number of samples will smooth the output value nicely but will also increase settling time and start-up/tare time (but not response time). It will also eat some memory.
 
-The HX711 sample rate can be set to 10SPS or 80SPS (samples per second) by pulling pin 15 high (80SPS) or low (10SPS), ref HX711 data sheet.
-On fabricated modules there is usually a solder jumper on the PCB for pin 15 high/low. The rate setting can be checked by measuring the voltage on pin 15.
+Important: The HX711 sample rate can be set to 10SPS or 80SPS (samples per second) by pulling pin 15 high (80SPS) or low (10SPS), ref HX711 data sheet.
+On fabricated HX711 modules there is usually a solder jumper on the PCB for pin 15 high/low. The rate setting can be checked by measuring the voltage on pin 15.
 ADC noise is worst on the 80SPS rate. Unless very quick settling time is required, 10SPS should be the best sample rate for most applications.
 
 Start up and tare: from start-up/reset, the tare function seems to be more accurate if called after a "pre-warm-up" period running conversions continuously for a few seconds. See example files.
-
-Measuring units: Adjust the scaling factor with the function setCalFactor(float) in setup, so that the "readable" output matches your preferred unit.
 
 Hardware and ADC noise:
 Wires between HX711 and load cell should be twisted and kept as short as possible.
 Most available HX711 modules seems to follow the reference design, but be aware that some modules are poorly designed with under-sized capacitors, and noisy readings.
 The Sparkfun module seems to differ from most other available modules as it has some additional components for noise reduction. 
 
+To get started: Install the library from Arduino Library Manager. Begin with the Calibration.ino example file, then move on to the Read_1x_load_cell.ino example file.
