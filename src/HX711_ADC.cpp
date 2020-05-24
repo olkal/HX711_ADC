@@ -83,7 +83,6 @@ int HX711_ADC::startMultiple(unsigned int t)
 {
 	tareTimeoutFlag = 0;
 	lastDoutLowTime = millis();
-	static unsigned long timeout = millis() + tareTimeOut;
 	if(startStatus == 0) {
 		if(isFirst) {
 			startMultipleTimeStamp = millis();
@@ -103,6 +102,7 @@ int HX711_ADC::startMultiple(unsigned int t)
 			return 0;
 		}
 		else { //do tare after stabilization time is up
+			static unsigned long timeout = millis() + tareTimeOut;
 			doTare = 1;
 			update();
 			if(convRslt == 2) 
@@ -132,7 +132,6 @@ int HX711_ADC::startMultiple(unsigned int t, bool dotare)
 {
 	tareTimeoutFlag = 0;
 	lastDoutLowTime = millis();
-	static unsigned long timeout = millis() + tareTimeOut;
 	if(startStatus == 0) {
 		if(isFirst) {
 			startMultipleTimeStamp = millis();
@@ -154,6 +153,7 @@ int HX711_ADC::startMultiple(unsigned int t, bool dotare)
 		else { //do tare after stabilization time is up
 			if (dotare) 
 			{
+				static unsigned long timeout = millis() + tareTimeOut;
 				doTare = 1;
 				update();
 				if(convRslt == 2) 

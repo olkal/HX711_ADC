@@ -76,8 +76,8 @@ void loop() {
       newDataReady = 0;
       Serial.print("Load_cell output val: ");
       Serial.print(i);
-      Serial.print("  ");
-      Serial.println(millis() - t);
+      //Serial.print("  ");
+      //Serial.println(millis() - t);
       t = millis();
     }
   }
