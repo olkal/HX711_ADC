@@ -1,4 +1,3 @@
-# 18.04.2020: New version 1.2.0!
 Latest release and change log here: https://github.com/olkal/HX711_ADC/releases
 
 This an Arduino library for the HX711 24-bit ADC for weight scales.

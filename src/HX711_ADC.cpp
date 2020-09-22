@@ -293,6 +293,7 @@ uint8_t HX711_ADC::conversion24bit()  //read 24 bit data, store in dataset and s
 		if(SCK_DELAY) delayMicroseconds(1); // could be required for faster mcu's, set value in config.h
 		digitalWrite(sckPin, 1);
 		if(SCK_DELAY) delayMicroseconds(1); // could be required for faster mcu's, set value in config.h
+		digitalWrite(sckPin, 0);
 		if (i < (24)) 
 		{
 			dout = digitalRead(doutPin);
@@ -302,7 +303,6 @@ uint8_t HX711_ADC::conversion24bit()  //read 24 bit data, store in dataset and s
 				data++;
 			}
 		}
-		digitalWrite(sckPin, 0);
 	}
 	if(SCK_DISABLE_INTERRUPTS) interrupts(); 
 	//convert range from 0x800000 > 0x7FFFFF to 0x000000 > 0xFFFFFF:
@@ -310,7 +310,7 @@ uint8_t HX711_ADC::conversion24bit()  //read 24 bit data, store in dataset and s
 	if ((data < 0x000000) || (data > 0xFFFFFF))
 	{
 		dataOutOfRange = 1;
-		Serial.println("dataOutOfRange");
+		//Serial.println("dataOutOfRange");
 	}
 	if (readIndex == samplesInUse + IGN_HIGH_SAMPLE + IGN_LOW_SAMPLE - 1) 
 	{
