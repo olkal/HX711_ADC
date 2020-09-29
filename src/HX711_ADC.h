@@ -109,7 +109,7 @@ class HX711_ADC
 		bool tareTimeoutFlag;
 		bool tareTimeoutDisable = 0;
 		int samplesInUse = SAMPLES;
-		long lastSmoothedData;
+		long lastSmoothedData = 0;
 		bool dataOutOfRange = 0;
 		unsigned long lastDoutLowTime = 0;
 		bool signalTimeoutFlag = 0;
