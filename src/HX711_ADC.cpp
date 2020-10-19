@@ -44,7 +44,7 @@ void HX711_ADC::begin(uint8_t gain)
 /*  start(t): 
 *	will do conversions continuously for 't' +400 milliseconds (400ms is min. settling time at 10SPS). 
 *   Running this for 1-5s in setup() - before tare() seems to improve the tare accuracy */
-int HX711_ADC::start(unsigned int t)
+void HX711_ADC::start(unsigned int t)
 {
 	t += 400;
 	lastDoutLowTime = millis();
@@ -60,7 +60,7 @@ int HX711_ADC::start(unsigned int t)
 /*  start(t, dotare) with selectable tare:
 *	will do conversions continuously for 't' +400 milliseconds (400ms is min. settling time at 10SPS). 
 *   Running this for 1-5s in setup() - before tare() seems to improve the tare accuracy. */
-int HX711_ADC::start(unsigned int t, bool dotare)
+void HX711_ADC::start(unsigned int t, bool dotare)
 {
 	t += 400;
 	lastDoutLowTime = millis();
@@ -96,7 +96,7 @@ int HX711_ADC::startMultiple(unsigned int t)
 			}
 			isFirst = 0;
 		}	
-		if(millis() < startMultipleTimeStamp + startMultipleWaitTime) {
+		if(millis() - startMultipleTimeStamp > startMultipleWaitTime) {
 			update(); //do conversions during stabilization time
 			yield();
 			return 0;
@@ -145,7 +145,7 @@ int HX711_ADC::startMultiple(unsigned int t, bool dotare)
 			}
 			isFirst = 0;
 		}	
-		if(millis() < startMultipleTimeStamp + startMultipleWaitTime) {
+		if(millis() - startMultipleTimeStamp > startMultipleWaitTime) {
 			update(); //do conversions during stabilization time
 			yield();
 			return 0;
@@ -210,6 +210,7 @@ void HX711_ADC::tareNoDelay()
 void HX711_ADC::setCalFactor(float cal) 
 {
 	calFactor = cal;
+	calFactorRecip = 1/calFactor;
 }
 
 //returns 'true' if tareNoDelay() operation is complete
@@ -241,7 +242,8 @@ uint8_t HX711_ADC::update()
 	}
 	else 
 	{
-		if (millis() > (lastDoutLowTime + SIGNAL_TIMEOUT))
+		//if (millis() > (lastDoutLowTime + SIGNAL_TIMEOUT))
+		if (millis() - lastDoutLowTime > SIGNAL_TIMEOUT)
 		{
 			signalTimeoutFlag = 1;
 		}
@@ -252,14 +254,10 @@ uint8_t HX711_ADC::update()
 
 float HX711_ADC::getData() // return fresh data from the moving average dataset
 {
-	//long k = 0;
 	long data = 0;
-	//data = smoothedData() - tareOffset;
 	lastSmoothedData = smoothedData();
-	data = (lastSmoothedData >> divBit) - tareOffset ;
-	//data = (data >> divBit);
-	
-	float x = (float)data / calFactor;
+	data = lastSmoothedData - tareOffset ;
+	float x = (float)data * calFactorRecip;
 	return x;
 }
 
@@ -268,19 +266,28 @@ long HX711_ADC::smoothedData()
 	long data = 0;
 	long L = 0xFFFFFF;
 	long H = 0x00;
-	//for (uint8_t r = 0; r < DATA_SET; r++) {
 	for (uint8_t r = 0; r < (samplesInUse + IGN_HIGH_SAMPLE + IGN_LOW_SAMPLE); r++) 
 	{
+		#if IGN_LOW_SAMPLE
 		if (L > dataSampleSet[r]) L = dataSampleSet[r]; // find lowest value
+		#endif
+		#if IGN_HIGH_SAMPLE
 		if (H < dataSampleSet[r]) H = dataSampleSet[r]; // find highest value
+		#endif
 		data += dataSampleSet[r];
 	}
-	if(IGN_LOW_SAMPLE) data -= L; //remove lowest value
-	if(IGN_HIGH_SAMPLE) data -= H; //remove highest value
-	return data;
+	#if IGN_LOW_SAMPLE 
+	data -= L; //remove lowest value
+	#endif
+	#if IGN_HIGH_SAMPLE 
+	data -= H; //remove highest value
+	#endif
+	//return data;
+	return (data >> divBit);
+
 }
 
-uint8_t HX711_ADC::conversion24bit()  //read 24 bit data, store in dataset and start the next conversion
+void HX711_ADC::conversion24bit()  //read 24 bit data, store in dataset and start the next conversion
 {
 	conversionTime = micros() - conversionStartTime;
 	conversionStartTime = micros();
@@ -290,24 +297,25 @@ uint8_t HX711_ADC::conversion24bit()  //read 24 bit data, store in dataset and s
 	if(SCK_DISABLE_INTERRUPTS) noInterrupts();
 	for (uint8_t i = 0; i < (24 + GAIN); i++) 
 	{ //read 24 bit data + set gain and start next conversion
-		if(SCK_DELAY) delayMicroseconds(1); // could be required for faster mcu's, set value in config.h
+		if(SCK_DELAY) delayMicroseconds(3); // could be required for faster mcu's, set value in config.h
 		digitalWrite(sckPin, 1);
-		if(SCK_DELAY) delayMicroseconds(1); // could be required for faster mcu's, set value in config.h
+		if(SCK_DELAY) delayMicroseconds(3); // could be required for faster mcu's, set value in config.h
 		digitalWrite(sckPin, 0);
 		if (i < (24)) 
 		{
 			dout = digitalRead(doutPin);
-			data = data << 1;
-			if (dout) 
-			{
-				data++;
-			}
+			data = (data << 1) | dout;
 		}
 	}
 	if(SCK_DISABLE_INTERRUPTS) interrupts(); 
-	//convert range from 0x800000 > 0x7FFFFF to 0x000000 > 0xFFFFFF:
-	data = data ^ 0x800000; // if the 24th bit is '1', change 24th bit to 0 
-	if ((data < 0x000000) || (data > 0xFFFFFF))
+	/*
+	The HX711 output range is min. 0x800000 and max. 0x7FFFFF (the value rolls over).
+	In order to convert the range to min. 0x000000 and max. 0xFFFFFF,
+	the 24th bit must be changed from 0 to 1 or from 1 to 0.
+	*/
+	data = data ^ 0x800000; // flip the 24th bit 
+	
+	if (data > 0xFFFFFF) 
 	{
 		dataOutOfRange = 1;
 		//Serial.println("dataOutOfRange");
@@ -332,7 +340,7 @@ uint8_t HX711_ADC::conversion24bit()  //read 24 bit data, store in dataset and s
 			}
 			else 
 			{
-				tareOffset = (smoothedData() >> divBit);
+				tareOffset = smoothedData();
 				tareTimes = 0;
 				doTare = 0;
 				tareStatus = 1;
@@ -433,7 +441,7 @@ void HX711_ADC::setSamplesInUse(int samples)
 		{
 			for (uint8_t r = 0; r < samplesInUse + IGN_HIGH_SAMPLE + IGN_LOW_SAMPLE; r++) 
 			{
-				dataSampleSet[r] = (lastSmoothedData >> old_divbit);
+				dataSampleSet[r] = lastSmoothedData;
 			}
 			readIndex = 0;
 		}

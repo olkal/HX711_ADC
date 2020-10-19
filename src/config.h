@@ -30,7 +30,7 @@ Note that you can also overide (reducing) the number of samples in use at any ti
 #define IGN_HIGH_SAMPLE 			1		//default value: 1
 #define IGN_LOW_SAMPLE 				1		//default value: 1
 
-//1 microsecond delay after writing sck pin high or low. This delay could be required for faster mcu's.
+//microsecond delay after writing sck pin high or low. This delay could be required for faster mcu's.
 //So far the only mcu reported to need this delay is the ESP32 (issue #35), both the Arduino Due and ESP8266 seems to run fine without it.
 //Change the value to '1' to enable the delay.
 #define SCK_DELAY					0		//default value: 0

@@ -54,8 +54,8 @@ class HX711_ADC
 		void setGain(uint8_t gain = 128); 			//value must be 32, 64 or 128*
 		void begin();								//set pinMode, HX711 gain and power up the HX711
 		void begin(uint8_t gain);					//set pinMode, HX711 selected gain and power up the HX711
-		int start(unsigned int t); 					//start HX711 and do tare 
-		int start(unsigned int t, bool dotare);		//start HX711, do tare if selected
+		void start(unsigned int t); 					//start HX711 and do tare 
+		void start(unsigned int t, bool dotare);		//start HX711, do tare if selected
 		int startMultiple(unsigned int t); 			//start and do tare, multiple HX711 simultaniously
 		int startMultiple(unsigned int t, bool dotare);	//start and do tare if selected, multiple HX711 simultaniously
 		void tare(); 								//zero the scale, wait for tare to finnish (blocking)
@@ -84,12 +84,13 @@ class HX711_ADC
 		bool getSignalTimeoutFlag();				//returns 'true' if it takes longer time then 'SIGNAL_TIMEOUT' for the dout pin to go low after a new conversion is started
 
 	protected:
-		uint8_t conversion24bit(); 					//if conversion is ready: returns 24 bit data and starts the next conversion
+		void conversion24bit(); 					//if conversion is ready: returns 24 bit data and starts the next conversion
 		long smoothedData();						//returns the smoothed data value calculated from the dataset
 		uint8_t sckPin; 							//HX711 pd_sck pin
 		uint8_t doutPin; 							//HX711 dout pin
 		uint8_t GAIN;								//HX711 GAIN
-		float calFactor = 1.0;						//calibration factor, the raw data is divided with this number
+		float calFactor = 1.0;						//calibration factor as given in function setCalFactor(float cal)
+		float calFactorRecip = 1.0;					//reciprocal calibration factor (1/calFactor), the HX711 raw data is multiplied by this value
 		volatile long dataSampleSet[DATA_SET + 1];	// dataset, make voltile if interrupt is used 
 		long tareOffset;
 		int readIndex = 0;
