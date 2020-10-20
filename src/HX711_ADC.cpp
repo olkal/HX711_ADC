@@ -426,15 +426,16 @@ void HX711_ADC::setSamplesInUse(int samples)
 	
 	if(samples <= SAMPLES)
 	{
-		if(samples == 0) {samplesInUse = SAMPLES; divBit = divBitCompiled;} //reset to the original value
-		else if(samples == 1) {samplesInUse = 1; divBit = 0;}
-		else if((samples > 1) && (samples < 4)) {samplesInUse = 2; divBit = 1;}
-		else if((samples >= 4) && (samples < 8)) {samplesInUse = 4; divBit = 2;}
-		else if((samples >= 8) && (samples < 16)) {samplesInUse = 8; divBit = 3;}
-		else if((samples >= 16) && (samples < 32)) {samplesInUse = 16; divBit = 4;}
-		else if((samples >= 32) && (samples < 64)) {samplesInUse = 32; divBit = 5;}
-		else if((samples >= 64) && (samples < 128)) {samplesInUse = 64; divBit = 6;}
-		else {samplesInUse = 128; divBit = 7;}
+		if(samples == 0) //reset to the original value
+		{
+			divBit = divBitCompiled;
+		} 
+		else
+		{
+			samples >>= 1;
+			for(divBit = 0; samples != 0; samples >>= 1, divBit++);
+		}
+		samplesInUse = 1 << divBit;
 		
 		//replace the value of all samples in use with the last conversion value
 		if(samplesInUse != old_value) 
