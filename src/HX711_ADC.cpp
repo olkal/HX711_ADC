@@ -44,7 +44,7 @@ void HX711_ADC::begin(uint8_t gain)
 /*  start(t): 
 *	will do conversions continuously for 't' +400 milliseconds (400ms is min. settling time at 10SPS). 
 *   Running this for 1-5s in setup() - before tare() seems to improve the tare accuracy */
-void HX711_ADC::start(unsigned int t)
+void HX711_ADC::start(unsigned long t)
 {
 	t += 400;
 	lastDoutLowTime = millis();
@@ -60,7 +60,7 @@ void HX711_ADC::start(unsigned int t)
 /*  start(t, dotare) with selectable tare:
 *	will do conversions continuously for 't' +400 milliseconds (400ms is min. settling time at 10SPS). 
 *   Running this for 1-5s in setup() - before tare() seems to improve the tare accuracy. */
-void HX711_ADC::start(unsigned int t, bool dotare)
+void HX711_ADC::start(unsigned long t, bool dotare)
 {
 	t += 400;
 	lastDoutLowTime = millis();
@@ -79,7 +79,7 @@ void HX711_ADC::start(unsigned int t, bool dotare)
 /*  startMultiple(t): use this if you have more than one load cell and you want to do tare and stabilization simultaneously.
 *	Will do conversions continuously for 't' +400 milliseconds (400ms is min. settling time at 10SPS). 
 *   Running this for 1-5s in setup() - before tare() seems to improve the tare accuracy */
-int HX711_ADC::startMultiple(unsigned int t)
+int HX711_ADC::startMultiple(unsigned long t)
 {
 	tareTimeoutFlag = 0;
 	lastDoutLowTime = millis();
@@ -128,7 +128,7 @@ int HX711_ADC::startMultiple(unsigned int t)
 *	use this if you have more than one load cell and you want to (do tare and) stabilization simultaneously.
 *	Will do conversions continuously for 't' +400 milliseconds (400ms is min. settling time at 10SPS). 
 *   Running this for 1-5s in setup() - before tare() seems to improve the tare accuracy */
-int HX711_ADC::startMultiple(unsigned int t, bool dotare)
+int HX711_ADC::startMultiple(unsigned long t, bool dotare)
 {
 	tareTimeoutFlag = 0;
 	lastDoutLowTime = millis();
@@ -171,6 +171,7 @@ int HX711_ADC::startMultiple(unsigned int t, bool dotare)
 					}
 				}
 			}
+			else return 1;
 		}
 	}
 	return startStatus;
@@ -422,7 +423,6 @@ long HX711_ADC::getSettlingTime()
 void HX711_ADC::setSamplesInUse(int samples)
 {
 	int old_value = samplesInUse;
-	int old_divbit = divBit;
 	
 	if(samples <= SAMPLES)
 	{

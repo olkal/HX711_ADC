@@ -23,7 +23,7 @@ HX711_ADC LoadCell_2(HX711_dout_2, HX711_sck_2); //HX711 2
 
 const int calVal_eepromAdress_1 = 0; // eeprom adress for calibration value load cell 1 (4 bytes)
 const int calVal_eepromAdress_2 = 4; // eeprom adress for calibration value load cell 2 (4 bytes)
-long t;
+unsigned long t = 0;
 
 void setup() {
   Serial.begin(57600); delay(10);
@@ -43,7 +43,7 @@ void setup() {
 
   LoadCell_1.begin();
   LoadCell_2.begin();
-  long stabilizingtime = 2000; // tare preciscion can be improved by adding a few seconds of stabilizing time
+  unsigned long stabilizingtime = 2000; // tare preciscion can be improved by adding a few seconds of stabilizing time
   boolean _tare = true; //set this to false if you don't want tare to be performed in the next step
   byte loadcell_1_rdy = 0;
   byte loadcell_2_rdy = 0;
@@ -86,7 +86,6 @@ void loop() {
 
   // receive command from serial terminal, send 't' to initiate tare operation:
   if (Serial.available() > 0) {
-    float i;
     char inByte = Serial.read();
     if (inByte == 't') {
       LoadCell_1.tareNoDelay();

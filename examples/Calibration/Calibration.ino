@@ -29,7 +29,7 @@ const int HX711_sck = 5; //mcu > HX711 sck pin
 HX711_ADC LoadCell(HX711_dout, HX711_sck);
 
 const int calVal_eepromAdress = 0;
-long t;
+unsigned long t = 0;
 
 void setup() {
   Serial.begin(57600); delay(10);
@@ -37,7 +37,7 @@ void setup() {
   Serial.println("Starting...");
 
   LoadCell.begin();
-  long stabilizingtime = 2000; // preciscion right after power-up can be improved by adding a few seconds of stabilizing time
+  unsigned long stabilizingtime = 2000; // preciscion right after power-up can be improved by adding a few seconds of stabilizing time
   boolean _tare = false; //set this to false if you don't want tare to be performed in the next step
   LoadCell.start(stabilizingtime, _tare);
   if (LoadCell.getTareTimeoutFlag() || LoadCell.getSignalTimeoutFlag()) {
@@ -72,7 +72,6 @@ void loop() {
 
   // receive command from serial terminal
   if (Serial.available() > 0) {
-    float i;
     char inByte = Serial.read();
     if (inByte == 't') LoadCell.tareNoDelay(); //tare
     else if (inByte == 'r') calibrate(); //calibrate
@@ -98,7 +97,6 @@ void calibrate() {
     LoadCell.update();
     if (Serial.available() > 0) {
       if (Serial.available() > 0) {
-        float i;
         char inByte = Serial.read();
         if (inByte == 't') LoadCell.tareNoDelay();
       }

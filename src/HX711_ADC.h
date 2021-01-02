@@ -54,10 +54,10 @@ class HX711_ADC
 		void setGain(uint8_t gain = 128); 			//value must be 32, 64 or 128*
 		void begin();								//set pinMode, HX711 gain and power up the HX711
 		void begin(uint8_t gain);					//set pinMode, HX711 selected gain and power up the HX711
-		void start(unsigned int t); 					//start HX711 and do tare 
-		void start(unsigned int t, bool dotare);		//start HX711, do tare if selected
-		int startMultiple(unsigned int t); 			//start and do tare, multiple HX711 simultaniously
-		int startMultiple(unsigned int t, bool dotare);	//start and do tare if selected, multiple HX711 simultaniously
+		void start(unsigned long t); 					//start HX711 and do tare 
+		void start(unsigned long t, bool dotare);		//start HX711, do tare if selected
+		int startMultiple(unsigned long t); 			//start and do tare, multiple HX711 simultaniously
+		int startMultiple(unsigned long t, bool dotare);	//start and do tare if selected, multiple HX711 simultaniously
 		void tare(); 								//zero the scale, wait for tare to finnish (blocking)
 		void tareNoDelay(); 						//zero the scale, initiate the tare operation to run in the background (non-blocking)
 		bool getTareStatus();						//returns 'true' if tareNoDelay() operation is complete
@@ -102,8 +102,8 @@ class HX711_ADC
 		const uint8_t divBitCompiled = DIVB;
 		bool doTare;
 		bool startStatus;
-		long startMultipleTimeStamp;
-		long startMultipleWaitTime;
+		unsigned long startMultipleTimeStamp;
+		unsigned long startMultipleWaitTime;
 		uint8_t convRslt;
 		bool tareStatus;
 		unsigned int tareTimeOut = (SAMPLES + IGN_HIGH_SAMPLE + IGN_HIGH_SAMPLE) * 150; // tare timeout time in ms, no of samples * 150ms (10SPS + 50% margin)
