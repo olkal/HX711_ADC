@@ -19,18 +19,20 @@
 */
 
 #include <HX711_ADC.h>
+
 #if defined(ESP8266)|| defined(ESP32) || defined(AVR)
 #include <EEPROM.h>
 #endif
 
 //pins:
-const int HX711_dout = 6; //mcu > HX711 dout pin
-const int HX711_sck = 7; //mcu > HX711 sck pin
+const int HX711_dout = 4; //mcu > HX711 dout pin
+const int HX711_sck = 5; //mcu > HX711 sck pin
 
 //HX711 constructor:
 HX711_ADC LoadCell(HX711_dout, HX711_sck);
 
-const int calVal_calVal_eepromAdress = 0;
+const int calVal_eepromAdress = 0;
+const int tareOffsetVal_eepromAdress = 4;
 unsigned long t = 0;
 
 void setup() {
@@ -38,45 +40,37 @@ void setup() {
   Serial.println();
   Serial.println("Starting...");
 
-  float calibrationValue; // calibration value
-  calibrationValue = 696.0; // uncomment this if you want to set this value in the sketch
-#if defined(ESP8266) || defined(ESP32)
-  //EEPROM.begin(512); // uncomment this if you use ESP8266 and want to fetch this value from eeprom
-#endif
-  //EEPROM.get(calVal_eepromAdress, calibrationValue); // uncomment this if you want to fetch this value from eeprom
-
   LoadCell.begin();
-  unsigned long stabilizingtime = 2000; // tare preciscion can be improved by adding a few seconds of stabilizing time
-  boolean _tare = true; //set this to false if you don't want tare to be performed in the next step
+  float calibrationValue; // calibration value (see example file "Calibration.ino")
+  calibrationValue = 696.0; // uncomment this if you want to set the calibration value in the sketch
+
+#if defined(ESP8266)|| defined(ESP32)
+  EEPROM.begin(512);
+#endif
+
+  //EEPROM.get(calVal_eepromAdress, calibrationValue); // uncomment this if you want to fetch the calibration value from eeprom
+
+  //restore the zero offset value from eeprom:
+  long tare_offset = 0;
+  EEPROM.get(tareOffsetVal_eepromAdress, tare_offset);
+  LoadCell.setTareOffset(tare_offset);
+  boolean _tare = false; //set this to false as the value has been resored from eeprom
+
+  unsigned long stabilizingtime = 2000; // preciscion right after power-up can be improved by adding a few seconds of stabilizing time
   LoadCell.start(stabilizingtime, _tare);
   if (LoadCell.getTareTimeoutFlag()) {
     Serial.println("Timeout, check MCU>HX711 wiring and pin designations");
+    while (1);
   }
   else {
-    LoadCell.setCalFactor(calibrationValue); // set calibration factor (float)
+    LoadCell.setCalFactor(calibrationValue); // set calibration value (float)
     Serial.println("Startup is complete");
-  }
-  while (!LoadCell.update());
-  Serial.print("Calibration value: ");
-  Serial.println(LoadCell.getCalFactor());
-  Serial.print("HX711 measured conversion time ms: ");
-  Serial.println(LoadCell.getConversionTime());
-  Serial.print("HX711 measured sampling rate HZ: ");
-  Serial.println(LoadCell.getSPS());
-  Serial.print("HX711 measured settlingtime ms: ");
-  Serial.println(LoadCell.getSettlingTime());
-  Serial.println("Note that the settling time may increase significantly if you use delay() in your sketch!");
-  if (LoadCell.getSPS() < 7) {
-    Serial.println("!!Sampling rate is lower than specification, check MCU>HX711 wiring and pin designations");
-  }
-  else if (LoadCell.getSPS() > 100) {
-    Serial.println("!!Sampling rate is higher than specification, check MCU>HX711 wiring and pin designations");
   }
 }
 
 void loop() {
   static boolean newDataReady = 0;
-  const int serialPrintInterval = 500; //increase value to slow down serial print activity
+  const int serialPrintInterval = 250; //increase value to slow down serial print activity
 
   // check for new data/start next conversion:
   if (LoadCell.update()) newDataReady = true;
@@ -95,12 +89,20 @@ void loop() {
   // receive command from serial terminal, send 't' to initiate tare operation:
   if (Serial.available() > 0) {
     char inByte = Serial.read();
-    if (inByte == 't') LoadCell.tareNoDelay();
+    if (inByte == 't') refreshOffsetValueAndSaveToEEprom();
   }
+}
 
-  // check if last tare operation is complete:
-  if (LoadCell.getTareStatus() == true) {
-    Serial.println("Tare complete");
-  }
-
+// zero offset value (tare), calculate and save to EEprom:
+void refreshOffsetValueAndSaveToEEprom() {
+  long _offset = 0;
+  Serial.println("Calculating tare offset value...");
+  LoadCell.tare(); // calculate the new tare / zero offset value (blocking)
+  _offset = LoadCell.getTareOffset(); // get the new tare / zero offset value
+  EEPROM.put(tareOffsetVal_eepromAdress, _offset); // save the new tare / zero offset value to EEprom
+  LoadCell.setTareOffset(_offset); // set value as library parameter (next restart it will be read from EEprom)
+  Serial.print("New tare offset value:");
+  Serial.print(_offset);
+  Serial.print(", saved to EEprom adr:");
+  Serial.println(tareOffsetVal_eepromAdress);
 }

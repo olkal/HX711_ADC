@@ -9,7 +9,9 @@
 // Settling time (number of samples) and data filtering can be adjusted in the config.h file
 
 #include <HX711_ADC.h>
+#if defined(ESP8266)|| defined(ESP32) || defined(AVR)
 #include <EEPROM.h>
+#endif
 
 //pins:
 const int HX711_dout_1 = 4; //mcu > HX711 no 1 dout pin

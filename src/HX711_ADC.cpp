@@ -96,7 +96,7 @@ int HX711_ADC::startMultiple(unsigned long t)
 			}
 			isFirst = 0;
 		}	
-		if(millis() - startMultipleTimeStamp > startMultipleWaitTime) {
+		if((millis() - startMultipleTimeStamp) < startMultipleWaitTime) {
 			update(); //do conversions during stabilization time
 			yield();
 			return 0;
@@ -145,7 +145,7 @@ int HX711_ADC::startMultiple(unsigned long t, bool dotare)
 			}
 			isFirst = 0;
 		}	
-		if(millis() - startMultipleTimeStamp > startMultipleWaitTime) {
+		if((millis() - startMultipleTimeStamp) < startMultipleWaitTime) {
 			update(); //do conversions during stabilization time
 			yield();
 			return 0;

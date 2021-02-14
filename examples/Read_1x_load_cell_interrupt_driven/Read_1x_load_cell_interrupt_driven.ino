@@ -19,7 +19,9 @@
 */
 
 #include <HX711_ADC.h>
+#if defined(ESP8266)|| defined(ESP32) || defined(AVR)
 #include <EEPROM.h>
+#endif
 
 const int HX711_dout = 3; //mcu > HX711 dout pin, must be external interrupt capable!
 const int HX711_sck = 5; //mcu > HX711 sck pin
