@@ -205,6 +205,7 @@ void HX711_ADC::tareNoDelay()
 {
 	doTare = 1;
 	tareTimes = 0;
+	tareStatus = 0;
 }
 
 //set new calibration factor, raw data is divided by this value to convert to readable data
