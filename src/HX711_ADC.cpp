@@ -322,6 +322,9 @@ void HX711_ADC::conversion24bit()  //read 24 bit data, store in dataset and star
 		dataOutOfRange = 1;
 		//Serial.println("dataOutOfRange");
 	}
+	if (reverseVal) {
+		data = 0xFFFFFF - data;
+	}
 	if (readIndex == samplesInUse + IGN_HIGH_SAMPLE + IGN_LOW_SAMPLE - 1) 
 	{
 		readIndex = 0;
@@ -505,3 +508,9 @@ bool HX711_ADC::getSignalTimeoutFlag()
 {
 	return signalTimeoutFlag;
 }
+
+//reverse the output value (flip positive/negative value)
+//tare/zero-offset must be re-set after calling this.
+void HX711_ADC::setReverseVal() {
+	reverseVal = true;
+}				

@@ -39,6 +39,7 @@ void setup() {
   Serial.println("Starting...");
 
   LoadCell.begin();
+  //LoadCell.setReverseVal(); //uncomment to turn a negative output value to positive
   float calibrationValue; // calibration value (see example file "Calibration.ino")
   calibrationValue = 696.0; // uncomment this if you want to set the calibration value in the sketch
 #if defined(ESP8266)|| defined(ESP32)

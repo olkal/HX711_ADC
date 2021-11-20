@@ -45,6 +45,8 @@ void setup() {
 
   LoadCell_1.begin();
   LoadCell_2.begin();
+  //LoadCell_1.setReverseVal(); //uncomment to turn a negative output value to positive
+  //LoadCell_2.setReverseVal(); //uncomment to turn a negative output value to positive
   unsigned long stabilizingtime = 2000; // tare preciscion can be improved by adding a few seconds of stabilizing time
   boolean _tare = true; //set this to false if you don't want tare to be performed in the next step
   byte loadcell_1_rdy = 0;

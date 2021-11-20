@@ -40,7 +40,7 @@ refreshDataSet			KEYWORD2
 getDataSetStatus		KEYWORD2
 getNewCalibration		KEYWORD2
 getSignalTimeoutFlag	KEYWORD2
-
+setReverseVal			KEYWORD2
 
 
 #######################################

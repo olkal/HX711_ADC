@@ -82,6 +82,7 @@ class HX711_ADC
 		bool getDataSetStatus();					//returns 'true' when the whole dataset has been filled up with conversions, i.e. after a reset/restart
 		float getNewCalibration(float known_mass);	//returns and sets a new calibration value (calFactor) based on a known mass input
 		bool getSignalTimeoutFlag();				//returns 'true' if it takes longer time then 'SIGNAL_TIMEOUT' for the dout pin to go low after a new conversion is started
+		void setReverseVal();						//reverse the output value
 
 	protected:
 		void conversion24bit(); 					//if conversion is ready: returns 24 bit data and starts the next conversion
@@ -114,6 +115,7 @@ class HX711_ADC
 		bool dataOutOfRange = 0;
 		unsigned long lastDoutLowTime = 0;
 		bool signalTimeoutFlag = 0;
+		bool reverseVal = 0;
 };	
 
 #endif
