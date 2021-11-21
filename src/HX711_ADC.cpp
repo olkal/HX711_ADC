@@ -511,6 +511,6 @@ bool HX711_ADC::getSignalTimeoutFlag()
 
 //reverse the output value (flip positive/negative value)
 //tare/zero-offset must be re-set after calling this.
-void HX711_ADC::setReverseVal() {
+void HX711_ADC::setReverseOutput() {
 	reverseVal = true;
 }				
