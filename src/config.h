@@ -23,6 +23,9 @@ Note that you can also overide (reducing) the number of samples in use at any ti
 
 */
 
+#ifndef HX711_ADC_config_h
+#define HX711_ADC_config_h
+
 //number of samples in moving average dataset, value must be 1, 2, 4, 8, 16, 32, 64 or 128.
 #define SAMPLES 					16		//default value: 16
 
@@ -39,3 +42,4 @@ Note that you can also overide (reducing) the number of samples in use at any ti
 //if required you can change the value to '1' to disable interrupts when writing to the sck pin.
 #define SCK_DISABLE_INTERRUPTS		0		//default value: 0
 
+#endif
