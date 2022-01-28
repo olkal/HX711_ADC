@@ -64,6 +64,7 @@ class HX711_ADC
 		void setCalFactor(float cal); 				//set new calibration factor, raw data is divided by this value to convert to readable data
 		float getCalFactor(); 						//returns the current calibration factor
 		float getData(); 							//returns data from the moving average dataset 
+
 		int getReadIndex(); 						//for testing and debugging
 		float getConversionTime(); 					//for testing and debugging
 		float getSPS();								//for testing and debugging
@@ -75,6 +76,8 @@ class HX711_ADC
 		long getTareOffset();						//get the tare offset (raw data value output without the scale "calFactor")
 		void setTareOffset(long newoffset);			//set new tare offset (raw data value input without the scale "calFactor")
 		uint8_t update(); 							//if conversion is ready; read out 24 bit data and add to dataset
+		bool dataWaitingAsync(); 					//checks if data is available to read (no conversion yet)
+		bool updateAsync(); 						//read available data and add to dataset 
 		void setSamplesInUse(int samples);			//overide number of samples in use
 		int getSamplesInUse();						//returns current number of samples in use
 		void resetSamplesIndex();					//resets index for dataset
@@ -116,6 +119,7 @@ class HX711_ADC
 		unsigned long lastDoutLowTime = 0;
 		bool signalTimeoutFlag = 0;
 		bool reverseVal = 0;
+		bool dataWaiting = 0;
 };	
 
 #endif
