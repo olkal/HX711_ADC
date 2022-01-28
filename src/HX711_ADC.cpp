@@ -254,6 +254,45 @@ uint8_t HX711_ADC::update()
 	return convRslt;
 }
 
+// call the function dataWaitingAsync() in loop or from ISR to check if new data is available to read
+// if conversion is ready, just call updateAsync() to read out 24 bit data and add to dataset
+// returns 1 if data available , else 0
+bool HX711_ADC::dataWaitingAsync() 
+{
+	if (dataWaiting) { lastDoutLowTime = millis(); return 1; }
+	byte dout = digitalRead(doutPin); //check if conversion is ready
+	if (!dout) 
+	{
+		dataWaiting = true;
+		lastDoutLowTime = millis();
+		signalTimeoutFlag = 0;
+		return 1;
+	}
+	else
+	{
+		//if (millis() > (lastDoutLowTime + SIGNAL_TIMEOUT))
+		if (millis() - lastDoutLowTime > SIGNAL_TIMEOUT)
+		{
+			signalTimeoutFlag = 1;
+		}
+		convRslt = 0;
+	}
+	return 0;
+}
+
+// if data is available call updateAsync() to convert it and add it to the dataset.
+// call getData() to get latest value
+bool HX711_ADC::updateAsync() 
+{
+	if (dataWaiting) { 
+		conversion24bit();
+		dataWaiting = false;
+		return true;
+	}
+	return false;
+
+}
+
 float HX711_ADC::getData() // return fresh data from the moving average dataset
 {
 	long data = 0;
@@ -297,19 +336,22 @@ void HX711_ADC::conversion24bit()  //read 24 bit data, store in dataset and star
 	uint8_t dout;
 	convRslt = 0;
 	if(SCK_DISABLE_INTERRUPTS) noInterrupts();
+
 	for (uint8_t i = 0; i < (24 + GAIN); i++) 
-	{ //read 24 bit data + set gain and start next conversion
-		if(SCK_DELAY) delayMicroseconds(3); // could be required for faster mcu's, set value in config.h
+	{ 	//read 24 bit data + set gain and start next conversion
 		digitalWrite(sckPin, 1);
-		if(SCK_DELAY) delayMicroseconds(3); // could be required for faster mcu's, set value in config.h
+		if(SCK_DELAY) delayMicroseconds(1); // could be required for faster mcu's, set value in config.h
 		digitalWrite(sckPin, 0);
 		if (i < (24)) 
 		{
 			dout = digitalRead(doutPin);
 			data = (data << 1) | dout;
+		} else {
+			if(SCK_DELAY) delayMicroseconds(1); // could be required for faster mcu's, set value in config.h
 		}
 	}
-	if(SCK_DISABLE_INTERRUPTS) interrupts(); 
+	if(SCK_DISABLE_INTERRUPTS) interrupts();
+	
 	/*
 	The HX711 output range is min. 0x800000 and max. 0x7FFFFF (the value rolls over).
 	In order to convert the range to min. 0x000000 and max. 0xFFFFFF,
@@ -513,4 +555,4 @@ bool HX711_ADC::getSignalTimeoutFlag()
 //tare/zero-offset must be re-set after calling this.
 void HX711_ADC::setReverseOutput() {
 	reverseVal = true;
-}				
+}
