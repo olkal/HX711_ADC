@@ -96,22 +96,22 @@ class HX711_ADC
 		float calFactor = 1.0;						//calibration factor as given in function setCalFactor(float cal)
 		float calFactorRecip = 1.0;					//reciprocal calibration factor (1/calFactor), the HX711 raw data is multiplied by this value
 		volatile long dataSampleSet[DATA_SET + 1];	// dataset, make voltile if interrupt is used 
-		long tareOffset;
+		long tareOffset = 0;
 		int readIndex = 0;
-		unsigned long conversionStartTime;
-		unsigned long conversionTime;
+		unsigned long conversionStartTime = 0;
+		unsigned long conversionTime = 0;
 		uint8_t isFirst = 1;
-		uint8_t tareTimes;
+		uint8_t tareTimes = 0;
 		uint8_t divBit = DIVB;
 		const uint8_t divBitCompiled = DIVB;
-		bool doTare;
-		bool startStatus;
-		unsigned long startMultipleTimeStamp;
-		unsigned long startMultipleWaitTime;
-		uint8_t convRslt;
-		bool tareStatus;
+		bool doTare = 0;
+		bool startStatus = 0;
+		unsigned long startMultipleTimeStamp = 0;
+		unsigned long startMultipleWaitTime = 0;
+		uint8_t convRslt = 0;
+		bool tareStatus = 0;
 		unsigned int tareTimeOut = (SAMPLES + IGN_HIGH_SAMPLE + IGN_HIGH_SAMPLE) * 150; // tare timeout time in ms, no of samples * 150ms (10SPS + 50% margin)
-		bool tareTimeoutFlag;
+		bool tareTimeoutFlag = 0;
 		bool tareTimeoutDisable = 0;
 		int samplesInUse = SAMPLES;
 		long lastSmoothedData = 0;
