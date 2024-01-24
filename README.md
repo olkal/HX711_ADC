@@ -27,3 +27,5 @@ Most available HX711 modules seems to follow the reference design, but be aware 
 The Sparkfun module seems to differ from most other available modules as it has some additional components for noise reduction. 
 
 To get started: Install the library from Arduino Library Manager. Begin with the Calibration.ino example file, then move on to the Read_1x_load_cell.ino example file.
+
+If you need to keep the tare/zero-offset value after a device reboot, please see example Persistent_zero_offset.ino example file.
