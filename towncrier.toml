@@ -1,0 +1,101 @@
+## Towncrier file 
+
+
+[tool.towncrier]
+
+## The name of your Python package
+#package = "myproject"
+
+## The path to your Python package.
+## If your package lives in 'src/myproject/', it must be 'src',
+## but if you don't keep your code in a 'src' dir, remove the
+## config option
+package_dir = "src"
+
+## Where you want your news files to come out. This can be .rst
+## or .md, towncrier's default template works with both.
+filename = "releaseNotes.rst"
+
+## The name of the project
+name = "HX711_ADC"
+
+## Version of your project
+## Best practise is to use version option while building the output.
+# version = ""
+
+## Directory storing your news fragments 
+directory = "doc/rnfragments"
+
+
+
+## ============ SECTIONS ============
+## towncrier supports splitting fragments into multiple sections, each with its own news of fragment types.
+## e.g. in Arduino projects, the main project is the firmware and the secondary is the hardware project.
+#[[tool.towncrier.section]]
+#name = "Main Platform"
+#path = ""
+
+#[[tool.towncrier.section]]
+#name = "Secondary"
+#path = "secondary"
+
+
+## ============ FORMATING ============
+## template for generating the news file
+#template = "path/to/template.rst"
+
+## The magic string that towncrier looks for when considering where the release notes should start.
+## Text used to detect where to add the generated content in the middle of a file. Generated content added after this text. Newline auto added.
+## default is "<!-- towncrier release notes start -->\n".
+start_string = "<!-- towncrier release notes start -->\n"
+
+## Titel
+## default "{name} {version} ({project_date})"  # or false if template includes title
+title_format = "{version} ({project_date})"
+
+## issue format
+issue_format = "format string for {issue} (issue is the first part of fragment name)"
+
+## Underlines
+## Standard is designed to use with Markdown. When using RST make sure to change to =-^
+underlines = "=-~"
+
+## Line wrapping
+wrap = false  # Wrap text to 79 characters
+
+
+all_bullets = true  # make all fragments bullet points
+
+## ============ FRAGMENT TYPES ============
+## The five default types are:
+## feature: Signifying a new feature.
+## bugfix: Signifying a bug fix.
+## doc: Signifying a documentation improvement.
+## removal: Signifying a deprecation or removal of public API.
+## misc: A ticket has been closed, but it is not of interest to users.
+## e.g. 1.feature | e.g. 2843.bugfix
+
+[[tool.towncrier.type]]
+directory = "feature"
+name = "Feature"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "bugfix"
+name = "Bugfix"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "doc"
+name = "Documentation"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "removal"
+name = "Removed"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "misc"
+name = "Miscellaneous"
+showcontent = true
