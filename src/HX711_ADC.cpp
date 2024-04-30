@@ -47,8 +47,9 @@ void HX711_ADC::begin(uint8_t gain)
 void HX711_ADC::start(unsigned long t)
 {
 	t += 400;
+	unsigned long startTime = millis();
 	lastDoutLowTime = millis();
-	while(millis() < t) 
+	while(millis() < startTime + t) 
 	{
 		update();
 		yield();
@@ -63,8 +64,9 @@ void HX711_ADC::start(unsigned long t)
 void HX711_ADC::start(unsigned long t, bool dotare)
 {
 	t += 400;
+	unsigned long startTime = millis();
 	lastDoutLowTime = millis();
-	while(millis() < t) 
+	while(millis() < startTime + t) 
 	{
 		update();
 		yield();
