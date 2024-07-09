@@ -1,0 +1,8 @@
+# SYSTEM
+*.bak
+
+# IDE
+
+# PROJECT
+doc/build/*
+build/*

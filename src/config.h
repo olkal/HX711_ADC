@@ -1,12 +1,15 @@
-/*
+/**
    -------------------------------------------------------------------------------------
+   @file config.h
+   
    HX711_ADC
-   Arduino library for HX711 24-Bit Analog-to-Digital Converter for Weight Scales
-   Olav Kallhovd sept2017
+   @brief Arduino library for HX711 24-Bit Analog-to-Digital Converter for Weight Scales
+   @author Olav Kallhovd
+   @date sept2017
    -------------------------------------------------------------------------------------
 */
 
-/*
+/**
 HX711_ADC configuration
 
 Allowed values for "SAMPLES" is 1, 2, 4, 8, 16, 32, 64 or 128.
@@ -26,12 +29,12 @@ Note that you can also overide (reducing) the number of samples in use at any ti
 #ifndef HX711_ADC_config_h
 #define HX711_ADC_config_h
 
-//number of samples in moving average dataset, value must be 1, 2, 4, 8, 16, 32, 64 or 128.
-#define SAMPLES 					16		//default value: 16
+//! number of samples in moving average dataset, value must be 1, 2, 4, 8, 16, 32, 64 or 128.
+#define SAMPLES 					16		//!< default value: 16
 
-//adds extra sample(s) to the dataset and ignore peak high/low sample, value must be 0 or 1.
-#define IGN_HIGH_SAMPLE 			1		//default value: 1
-#define IGN_LOW_SAMPLE 				1		//default value: 1
+//! adds extra sample(s) to the dataset and ignore peak high/low sample, value must be 0 or 1.
+#define IGN_HIGH_SAMPLE 			1		//!< default value: 1
+#define IGN_LOW_SAMPLE 				1		//!< default value: 1
 
 //microsecond delay after writing sck pin high or low. This delay could be required for faster mcu's.
 //Mcu's reported to need this delay is the ESP32 (issue #35) and RP2040, the Arduino Due and ESP8266 seems to run fine without it.
