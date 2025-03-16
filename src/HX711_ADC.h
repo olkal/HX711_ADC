@@ -54,6 +54,7 @@ class HX711_ADC
 		void setGain(uint8_t gain = 128); 			//value must be 32, 64 or 128*
 		void begin();								//set pinMode, HX711 gain and power up the HX711
 		void begin(uint8_t gain);					//set pinMode, HX711 selected gain and power up the HX711
+		void begin(uint8_t dout, uint8_t sck, uint8_t gain = 128); //set pins and pinMode, HX711 selected gain and power up the HX711
 		void start(unsigned long t); 					//start HX711 and do tare 
 		void start(unsigned long t, bool dotare);		//start HX711, do tare if selected
 		int startMultiple(unsigned long t); 			//start and do tare, multiple HX711 simultaniously

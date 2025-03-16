@@ -41,6 +41,16 @@ void HX711_ADC::begin(uint8_t gain)
 	powerUp();
 }
 
+//set pins and pinMode, HX711 selected gain and power up the HX711
+void HX711_ADC::begin(uint8_t dout, uint8_t sck, uint8_t gain) {
+    doutPin = dout;  // Assign new pin numbers
+    sckPin = sck;
+    pinMode(sckPin, OUTPUT);
+    pinMode(doutPin, INPUT);
+    setGain(gain);
+    powerUp();
+}
+
 /*  start(t): 
 *	will do conversions continuously for 't' +400 milliseconds (400ms is min. settling time at 10SPS). 
 *   Running this for 1-5s in setup() - before tare() seems to improve the tare accuracy */
