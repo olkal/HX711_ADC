@@ -307,8 +307,12 @@ float HX711_ADC::getData() // return fresh data from the moving average dataset
 long HX711_ADC::smoothedData() 
 {
 	long data = 0;
+#if IGN_LOW_SAMPLE
 	long L = 0xFFFFFF;
+#endif
+#if IGN_HIGH_SAMPLE
 	long H = 0x00;
+#endif
 	for (uint8_t r = 0; r < (samplesInUse + IGN_HIGH_SAMPLE + IGN_LOW_SAMPLE); r++) 
 	{
 		#if IGN_LOW_SAMPLE
